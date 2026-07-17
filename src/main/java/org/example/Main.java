@@ -1,17 +1,40 @@
 package org.example;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        DatabaseConnection databaseConnection = new DatabaseConnection();
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        try {
+            Connection connection = databaseConnection.getConnection();
+            if (connection != null) {
+                CountryRepository countryRepository = new CountryRepository(connection);
+                List<Country> countries = countryRepository.findAllCountriesByPopulationDesc();
+
+                printCountryReport(countries);
+                databaseConnection.closeConnection(connection);
+            }
+        } catch (SQLException exception) {
+            System.out.println("Connection Failed: " + exception.getMessage());
+        }
+    }
+
+    private static void printCountryReport(List<Country> countries) {
+        System.out.printf("%-6s %-45s %-20s %-25s %-15s %-30s%n",
+                "Code", "Name", "Continent", "Region", "Population", "Capital");
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------");
+
+        for (Country country : countries) {
+            System.out.printf("%-6s %-45s %-20s %-25s %-15d %-30s%n",
+                    country.getCode(),
+                    country.getName(),
+                    country.getContinent(),
+                    country.getRegion(),
+                    country.getPopulation(),
+                    country.getCapital());
         }
     }
 }
