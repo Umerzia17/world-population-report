@@ -3,6 +3,7 @@ package org.example;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main
 {
@@ -27,13 +28,19 @@ public class Main
                 System.out.println("Requirement 2  Cities Sorted by Population");
                 printCityReport(cities);
                 System.out.println();
-
                 // Requirement 3: Capital cities sorted by population
-                CapitalCityRepository capitalCityRepository = new CapitalCityRepository(connection);
-                List<City> capitalCities = capitalCityRepository.findAllCapitalCitiesByPopulationDesc();
+                List<CapitalCity> capitalCities = cityRepository.findAllCapitalCitiesByPopulationDesc();
                 System.out.println("Requirement 3  Capital Cities Sorted by Population");
                 printCapitalCityReport(capitalCities);
-
+                System.out.println();
+                // Requirement 4: Top N populated cities in the world
+                Scanner scanner = new Scanner(System.in);
+                System.out.print("Enter the value of N: ");
+                int limit = scanner.nextInt();
+                List<City> topCities = cityRepository.findTopNCitiesByPopulation(limit);
+                System.out.println();
+                System.out.println("Requirement 4  Top " + limit + " Populated Cities in the World");
+                printCityReport(topCities);
                 databaseConnection.closeConnection(connection);
             }
         }
@@ -42,20 +49,13 @@ public class Main
             System.out.println("The Connection Failed: " + exception.getMessage());
         }
     }
-
     private static void printCountryReport(List<Country> countries)
     {
         System.out.printf("%-6s %-45s %-20s %-25s %-15s %-30s%n", "Code", "Name", "Continent", "Region", "Population", "Capital");
         System.out.println("------------------------------------------------------------------------------------------------------------------------------------------");
         for (Country country : countries)
         {
-            System.out.printf("%-6s %-45s %-20s %-25s %-15d %-30s%n",
-                    country.getCode(),
-                    country.getName(),
-                    country.getContinent(),
-                    country.getRegion(),
-                    country.getPopulation(),
-                    country.getCapital());
+            System.out.printf("%-6s %-45s %-20s %-25s %-15d %-30s%n", country.getCode(), country.getName(), country.getContinent(), country.getRegion(), country.getPopulation(), country.getCapital());
         }
     }
 
@@ -65,24 +65,17 @@ public class Main
         System.out.println("---------------------------------------------------------------------------------------------------------------------");
         for (City city : cities)
         {
-            System.out.printf("%-35s %-35s %-30s %-15d%n",
-                    city.getName(),
-                    city.getCountry(),
-                    city.getDistrict(),
-                    city.getPopulation());
+            System.out.printf("%-35s %-35s %-30s %-15d%n", city.getName(), city.getCountry(), city.getDistrict(), city.getPopulation());
         }
     }
 
-    private static void printCapitalCityReport(List<City> capitalCities)
+    private static void printCapitalCityReport(List<CapitalCity> capitalCities)
     {
         System.out.printf("%-35s %-35s %-15s%n", "Name", "Country", "Population");
         System.out.println("----------------------------------------------------------------------------------------------");
-        for (City city : capitalCities)
+        for (CapitalCity capitalCity : capitalCities)
         {
-            System.out.printf("%-35s %-35s %-15d%n",
-                    city.getName(),
-                    city.getCountry(),
-                    city.getPopulation());
+            System.out.printf("%-35s %-35s %-15d%n", capitalCity.getName(), capitalCity.getCountry(), capitalCity.getPopulation());
         }
     }
 }
