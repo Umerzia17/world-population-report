@@ -16,6 +16,7 @@ public class Main
             if (connection != null)
             {
                 System.out.println("Database is Connected Successfully!\n");
+
                 // Requirement 1: Countries sorted by population
                 CountryRepository countryRepository = new CountryRepository(connection);
                 List<Country> countries = countryRepository.findAllCountriesByPopulationDesc();
@@ -73,6 +74,12 @@ public class Main
                 System.out.println("Population of Country (" + country + ") : " + populationRepository.getCountryPopulation(country));
                 System.out.println("Population of District (" + district + ") : " + populationRepository.getDistrictPopulation(district));
                 System.out.println("Population of City (" + city + ") : " + populationRepository.getCityPopulation(city));
+
+                // Requirement 7: Language Report
+                List<LanguageReport> languageReports = populationRepository.findLanguageReports();
+                System.out.println();
+                System.out.println("Requirement 7  Language Report");
+                printLanguageReport(languageReports);
                 databaseConnection.closeConnection(connection);
             }
         }
@@ -117,6 +124,15 @@ public class Main
         for (CountryPopulationReport report : reports)
         {
             System.out.printf("%-35s %-15d %-20d %-20d%n", report.getName(), report.getPopulation(), report.getCityPopulation(), report.getNonCityPopulation());
+        }
+    }
+    private static void printLanguageReport(List<LanguageReport> reports)
+    {
+        System.out.printf("%-20s %-20s %-25s%n", "Language", "Speakers", "World Percentage");
+        System.out.println("--------------------------------------------------------------------------");
+        for (LanguageReport report : reports)
+        {
+            System.out.printf("%-20s %-20d %-24.2f%%%n", report.getLanguage(), report.getSpeakers(), report.getWorldPercentage());
         }
     }
 }

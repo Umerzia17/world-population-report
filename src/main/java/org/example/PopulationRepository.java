@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PopulationRepository
 {
@@ -110,5 +112,36 @@ public class PopulationRepository
         }
 
         return 0L;
+    }
+    public List<LanguageReport> findLanguageReports() throws SQLException
+    {
+        String sql = "SELECT countrylanguage.Language, " +
+                "SUM(country.Population * countrylanguage.Percentage / 100) AS Speakers " +
+                "FROM countrylanguage " +
+                "JOIN country ON countrylanguage.CountryCode = country.Code " +
+                "WHERE countrylanguage.Language IN ('Chinese', 'English', 'Spanish') " +
+                "GROUP BY countrylanguage.Language " +
+                "ORDER BY Speakers DESC";
+
+        List<LanguageReport> reports = new ArrayList<>();
+
+        long worldPopulation = getWorldPopulation();
+
+        try (PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery())
+        {
+            while (resultSet.next())
+            {
+                long speakers = resultSet.getLong("Speakers");
+                double worldPercentage = worldPopulation == 0 ? 0 : (speakers * 100.0) / worldPopulation;
+
+                reports.add(new LanguageReport(
+                        resultSet.getString("Language"),
+                        speakers,
+                        worldPercentage));
+            }
+        }
+
+        return reports;
     }
 }
