@@ -26,4 +26,24 @@ public class CountryRepository
         }
         return countries;
     }
+    public List<CountryPopulationReport> findCountryPopulationReport() throws SQLException
+{
+    String sql = "SELECT country.Name, country.Population, " +"IFNULL(SUM(city.Population), 0) AS CityPopulation, " +"(country.Population - IFNULL(SUM(city.Population), 0)) AS NonCityPopulation " +"FROM country LEFT JOIN city ON country.Code = city.CountryCode " +"GROUP BY country.Code, country.Name, country.Population " +"ORDER BY country.Population DESC";
+
+    List<CountryPopulationReport> reports = new ArrayList<>();
+    try (PreparedStatement statement = connection.prepareStatement(sql);
+         ResultSet resultSet = statement.executeQuery())
+    {
+        while (resultSet.next())
+        {
+            reports.add(new CountryPopulationReport(
+                    resultSet.getString("Name"),
+                    resultSet.getLong("Population"),
+                    resultSet.getLong("CityPopulation"),
+                    resultSet.getLong("NonCityPopulation")));
+        }
+    }
+
+    return reports;
+}
 }
