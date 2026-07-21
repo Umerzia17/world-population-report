@@ -37,16 +37,42 @@ public class Main
                 Scanner scanner = new Scanner(System.in);
                 System.out.print("Enter the value of N: ");
                 int limit = scanner.nextInt();
+                scanner.nextLine();
                 List<City> topCities = cityRepository.findTopNCitiesByPopulation(limit);
                 System.out.println();
                 System.out.println("Requirement 4  Top " + limit + " Populated Cities in the World");
                 printCityReport(topCities);
                 System.out.println();
+
                 // Requirement 5: Population report for each country
                 List<CountryPopulationReport> reports = countryRepository.findCountryPopulationReport();
                 System.out.println("Requirement 5  Population Report for Each Country");
                 printCountryPopulationReport(reports);
+                System.out.println();
 
+                // Requirement 6: Population Reports
+                PopulationRepository populationRepository = new PopulationRepository(connection);
+                long worldPopulation = populationRepository.getWorldPopulation();
+                System.out.println("Requirement 6");
+                System.out.println("--------------------------------------------");
+                System.out.println("World Population : " + worldPopulation);
+                System.out.println();
+                System.out.print("Enter Continent: ");
+                String continent = scanner.nextLine();
+                System.out.print("Enter Region: ");
+                String region = scanner.nextLine();
+                System.out.print("Enter Country: ");
+                String country = scanner.nextLine();
+                System.out.print("Enter District: ");
+                String district = scanner.nextLine();
+                System.out.print("Enter City: ");
+                String city = scanner.nextLine();
+                System.out.println();
+                System.out.println("Population of Continent (" + continent + ") : " + populationRepository.getContinentPopulation(continent));
+                System.out.println("Population of Region (" + region + ") : " + populationRepository.getRegionPopulation(region));
+                System.out.println("Population of Country (" + country + ") : " + populationRepository.getCountryPopulation(country));
+                System.out.println("Population of District (" + district + ") : " + populationRepository.getDistrictPopulation(district));
+                System.out.println("Population of City (" + city + ") : " + populationRepository.getCityPopulation(city));
                 databaseConnection.closeConnection(connection);
             }
         }
@@ -55,15 +81,13 @@ public class Main
             System.out.println("The Connection Failed: " + exception.getMessage());
         }
     }
-
-    private static void printCountryReport(List<Country> countries)
+        private static void printCountryReport(List<Country> countries)
     {
         System.out.printf("%-6s %-45s %-20s %-25s %-15s %-30s%n", "Code", "Name", "Continent", "Region", "Population", "Capital");
         System.out.println("------------------------------------------------------------------------------------------------------------------------------------------");
         for (Country country : countries)
         {
-            System.out.printf("%-6s %-45s %-20s %-25s %-15d %-30s%n",
-                    country.getCode(), country.getName(), country.getContinent(), country.getRegion(), country.getPopulation(), country.getCapital());
+            System.out.printf("%-6s %-45s %-20s %-25s %-15d %-30s%n", country.getCode(), country.getName(), country.getContinent(), country.getRegion(), country.getPopulation(), country.getCapital());
         }
     }
 
@@ -73,8 +97,7 @@ public class Main
         System.out.println("---------------------------------------------------------------------------------------------------------------------");
         for (City city : cities)
         {
-            System.out.printf("%-35s %-35s %-30s %-15d%n",
-                    city.getName(), city.getCountry(), city.getDistrict(), city.getPopulation());
+            System.out.printf("%-35s %-35s %-30s %-15d%n", city.getName(), city.getCountry(), city.getDistrict(), city.getPopulation());
         }
     }
 
@@ -87,13 +110,10 @@ public class Main
             System.out.printf("%-35s %-35s %-15d%n", capitalCity.getName(), capitalCity.getCountry(), capitalCity.getPopulation());
         }
     }
-
     private static void printCountryPopulationReport(List<CountryPopulationReport> reports)
     {
         System.out.printf("%-35s %-15s %-20s %-20s%n", "Country", "Population", "City Population", "Non-City Population");
-
         System.out.println("--------------------------------------------------------------------------------------------------------------");
-
         for (CountryPopulationReport report : reports)
         {
             System.out.printf("%-35s %-15d %-20d %-20d%n", report.getName(), report.getPopulation(), report.getCityPopulation(), report.getNonCityPopulation());
