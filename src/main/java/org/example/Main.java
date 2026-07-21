@@ -1,40 +1,59 @@
 package org.example;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-public class Main {
-    public static void main(String[] args) {
+public class Main
+{
+    public static void main(String[] args)
+    {
         DatabaseConnection databaseConnection = new DatabaseConnection();
-
-        try {
+        try
+        {
             Connection connection = databaseConnection.getConnection();
-            if (connection != null) {
+            if (connection != null)
+            {
+                System.out.println("Database is Connected Successfully!\n");
+                //Requirement 1: countries sorted by population
                 CountryRepository countryRepository = new CountryRepository(connection);
                 List<Country> countries = countryRepository.findAllCountriesByPopulationDesc();
-
+                System.out.println("Requirement 1  Countries Sorted by Population");
                 printCountryReport(countries);
+                System.out.println();
+
+                // Requirement 2: Cities sorted by population
+                CityRepository cityRepository = new CityRepository(connection);
+                List<City> cities = cityRepository.findAllCitiesByPopulationDesc();
+                System.out.println("Requirement 2  Cities Sorted by Population");
+                printCityReport(cities);
+
                 databaseConnection.closeConnection(connection);
             }
-        } catch (SQLException exception) {
-            System.out.println("Connection Failed: " + exception.getMessage());
+
+        }
+        catch (SQLException exception)
+        {
+            System.out.println("The Connection Failed: " + exception.getMessage());
         }
     }
 
-    private static void printCountryReport(List<Country> countries) {
-        System.out.printf("%-6s %-45s %-20s %-25s %-15s %-30s%n",
-                "Code", "Name", "Continent", "Region", "Population", "Capital");
-        System.out.println("-------------------------------------------------------------------------------------------------------------------------------");
+    private static void printCountryReport(List<Country> countries)
+    {
+        System.out.printf("%-6s %-45s %-20s %-25s %-15s %-30s%n", "Code", "Name", "Continent", "Region", "Population", "Capital");
+        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------");
+        for (Country country : countries)
+        {
+            System.out.printf("%-6s %-45s %-20s %-25s %-15d %-30s%n", country.getCode(), country.getName(), country.getContinent(), country.getRegion(), country.getPopulation(), country.getCapital());
+        }
+    }
 
-        for (Country country : countries) {
-            System.out.printf("%-6s %-45s %-20s %-25s %-15d %-30s%n",
-                    country.getCode(),
-                    country.getName(),
-                    country.getContinent(),
-                    country.getRegion(),
-                    country.getPopulation(),
-                    country.getCapital());
+    private static void printCityReport(List<City> cities)
+    {
+        System.out.printf("%-35s %-35s %-30s %-15s%n", "Name", "Country", "District", "Population");
+        System.out.println("---------------------------------------------------------------------------------------------------------------------");
+        for (City city : cities)
+        {
+            System.out.printf("%-35s %-35s %-30s %-15d%n", city.getName(), city.getCountry(), city.getDistrict(), city.getPopulation());
         }
     }
 }
