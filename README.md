@@ -111,3 +111,8 @@ Every push to the repository automatically:
 - Produces the executable JAR file
 ### Evidence
 ![GitHub Actions Workflow](screenshots/githubactions.png)
+
+## Release
+The project has been released as **Version 1.0** on GitHub.
+### Evidence
+![Version 1.0 Release](screenshots/release-v1.0.png)
