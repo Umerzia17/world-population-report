@@ -102,3 +102,12 @@ docker run --rm world-population-report
 ## Kanban Board
 The project was managed using a Kanban board throughout the development lifecycle.
 ![Kanban Board](screenshots/kanbanboard.png)
+
+## GitHub Actions
+The Continuous Integration has been configured using GitHub Actions.
+Every push to the repository automatically:
+- Builds the project
+- Runs all unit tests
+- Produces the executable JAR file
+### Evidence
+![GitHub Actions Workflow](screenshots/githubactions.png)
