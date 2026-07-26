@@ -99,4 +99,6 @@ docker run --rm world-population-report
 **Result:**
 ![Docker Run](screenshots/dockerrun.png)
 
-
+## Kanban Board
+The project was managed using a Kanban board throughout the development lifecycle.
+![Kanban Board](screenshots/kanbanboard.png)
