@@ -115,4 +115,4 @@ Every push to the repository automatically:
 ## Release
 The project has been released as **Version 1.0** on GitHub.
 ### Evidence
-![Version 1.0 Release](screenshots/release-v1.0.png)
+![Version 1.0 Release](screenshots/releasev1.0.png)
